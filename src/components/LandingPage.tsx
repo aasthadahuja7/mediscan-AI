@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { SignInButton, SignUpButton } from '@clerk/clerk-react';
+import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton } from '@clerk/clerk-react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Brain, 
@@ -124,16 +124,40 @@ const LandingPage: React.FC = () => {
             <a href="#testimonials" className="text-slate-300 hover:text-white transition-colors">Reviews</a>
             <a href="#contact" className="text-slate-300 hover:text-white transition-colors">Contact</a>
             <ThemeToggle />
-            <SignInButton mode="modal">
-              <button className="px-4 py-2 text-slate-300 hover:text-white transition-colors">
-                Sign In
+            
+            {/* Authentication Buttons */}
+            <SignedOut>
+              <SignInButton mode="modal">
+                <button className="px-4 py-2 text-slate-300 hover:text-white transition-colors">
+                  Sign In
+                </button>
+              </SignInButton>
+              <SignUpButton mode="modal">
+                <button 
+                  className="px-6 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-lg hover:from-cyan-600 hover:to-blue-700 transition-all duration-200 font-medium"
+                  onClick={() => navigate('/dashboard')}
+                >
+                  Get Started
+                </button>
+              </SignUpButton>
+            </SignedOut>
+            
+            <SignedIn>
+              <button 
+                onClick={() => navigate('/dashboard')}
+                className="px-4 py-2 text-slate-300 hover:text-white transition-colors"
+              >
+                Dashboard
               </button>
-            </SignInButton>
-            <SignUpButton mode="modal">
-              <button className="px-6 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-lg hover:from-cyan-600 hover:to-blue-700 transition-all duration-200 font-medium">
-                Get Started
-              </button>
-            </SignUpButton>
+              <UserButton 
+                afterSignOutUrl="/"
+                appearance={{
+                  elements: {
+                    avatarBox: "w-8 h-8"
+                  }
+                }}
+              />
+            </SignedIn>
           </div>
 
           {/* Mobile Menu Button */}
@@ -161,14 +185,25 @@ const LandingPage: React.FC = () => {
               <div className="flex items-center justify-between pt-4 border-t border-slate-700">
                 <ThemeToggle />
                 <div className="space-x-4">
-                  <SignInButton mode="modal">
-                    <button className="text-slate-300 hover:text-white transition-colors">Sign In</button>
-                  </SignInButton>
-                  <SignUpButton mode="modal">
-                    <button className="px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-lg text-sm">
-                      Get Started
+                  <SignedOut>
+                    <SignInButton mode="modal">
+                      <button className="text-slate-300 hover:text-white transition-colors">Sign In</button>
+                    </SignInButton>
+                    <SignUpButton mode="modal">
+                      <button className="px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-lg text-sm">
+                        Get Started
+                      </button>
+                    </SignUpButton>
+                  </SignedOut>
+                  <SignedIn>
+                    <button 
+                      onClick={() => navigate('/dashboard')}
+                      className="text-slate-300 hover:text-white transition-colors"
+                    >
+                      Dashboard
                     </button>
-                  </SignUpButton>
+                    <UserButton afterSignOutUrl="/" />
+                  </SignedIn>
                 </div>
               </div>
             </div>
@@ -215,16 +250,30 @@ const LandingPage: React.FC = () => {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4">
-                <SignUpButton mode="modal">
+                <SignedOut>
+                  <SignUpButton mode="modal">
+                    <motion.button 
+                      className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 font-semibold text-lg flex items-center justify-center group shadow-lg shadow-cyan-500/25"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      Start Free Trial
+                      <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                    </motion.button>
+                  </SignUpButton>
+                </SignedOut>
+                
+                <SignedIn>
                   <motion.button 
+                    onClick={() => navigate('/dashboard')}
                     className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 font-semibold text-lg flex items-center justify-center group shadow-lg shadow-cyan-500/25"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
-                    Start Free Trial
+                    Go to Dashboard
                     <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
                   </motion.button>
-                </SignUpButton>
+                </SignedIn>
                 
                 <motion.button 
                   className="px-8 py-4 border border-slate-600 rounded-xl hover:border-slate-500 transition-all duration-300 font-semibold text-lg flex items-center justify-center group"
@@ -516,15 +565,27 @@ const LandingPage: React.FC = () => {
               Join thousands of medical professionals using MediScan AI to improve patient outcomes
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <SignUpButton mode="modal">
+              <SignedOut>
+                <SignUpButton mode="modal">
+                  <motion.button 
+                    className="px-8 py-4 bg-white text-blue-600 rounded-xl hover:bg-slate-100 transition-all duration-300 font-semibold text-lg"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    Start Free Trial
+                  </motion.button>
+                </SignUpButton>
+              </SignedOut>
+              <SignedIn>
                 <motion.button 
+                  onClick={() => navigate('/dashboard')}
                   className="px-8 py-4 bg-white text-blue-600 rounded-xl hover:bg-slate-100 transition-all duration-300 font-semibold text-lg"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  Start Free Trial
+                  Go to Dashboard
                 </motion.button>
-              </SignUpButton>
+              </SignedIn>
               <motion.button 
                 className="px-8 py-4 border border-white/30 text-white rounded-xl hover:border-white/50 transition-all duration-300 font-semibold text-lg"
                 whileHover={{ scale: 1.02 }}

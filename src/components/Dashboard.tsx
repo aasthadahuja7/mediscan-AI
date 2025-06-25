@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { UserButton } from '@clerk/clerk-react';
 import { motion } from 'framer-motion';
 import { 
@@ -11,24 +11,42 @@ import {
   Menu,
   X,
   Activity,
-  Zap
+  Zap,
+  BarChart3,
+  Users,
+  Shield
 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import ThemeToggle from './ThemeToggle';
 import ScanUpload from './dashboard/ScanUpload';
 import PastReports from './dashboard/PastReports';
 import DiagnosisResults from './dashboard/DiagnosisResults';
+import Analytics from './dashboard/Analytics';
+import PatientManagement from './dashboard/PatientManagement';
+import SecuritySettings from './dashboard/SecuritySettings';
 
 const Dashboard: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { theme } = useTheme();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const navigation = [
-    { name: 'Upload Scan', href: '/dashboard', icon: Upload },
+    { name: 'Upload Scan', href: '/dashboard', icon: Upload, exact: true },
     { name: 'Diagnosis Results', href: '/dashboard/results', icon: Brain },
     { name: 'Past Reports', href: '/dashboard/reports', icon: History },
+    { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart3 },
+    { name: 'Patients', href: '/dashboard/patients', icon: Users },
+    { name: 'Security', href: '/dashboard/security', icon: Shield },
     { name: 'Settings', href: '/dashboard/settings', icon: Settings },
   ];
+
+  const isActiveRoute = (href: string, exact?: boolean) => {
+    if (exact) {
+      return location.pathname === href;
+    }
+    return location.pathname.startsWith(href);
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 transition-colors duration-300">
@@ -65,14 +83,29 @@ const Dashboard: React.FC = () => {
         <nav className="mt-8 px-4">
           <div className="space-y-2">
             {navigation.map((item) => (
-              <a
+              <button
                 key={item.name}
-                href={item.href}
-                className="flex items-center px-4 py-3 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-200 group"
+                onClick={() => {
+                  navigate(item.href);
+                  setSidebarOpen(false);
+                }}
+                className={`
+                  w-full flex items-center px-4 py-3 text-left rounded-lg transition-colors duration-200 group
+                  ${isActiveRoute(item.href, item.exact)
+                    ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg'
+                    : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+                  }
+                `}
               >
-                <item.icon className="w-5 h-5 mr-3 text-slate-500 dark:text-slate-400 group-hover:text-cyan-600 dark:group-hover:text-cyan-400" />
+                <item.icon className={`
+                  w-5 h-5 mr-3 transition-colors
+                  ${isActiveRoute(item.href, item.exact)
+                    ? 'text-white'
+                    : 'text-slate-500 dark:text-slate-400 group-hover:text-cyan-600 dark:group-hover:text-cyan-400'
+                  }
+                `} />
                 {item.name}
-              </a>
+              </button>
             ))}
           </div>
         </nav>
@@ -132,7 +165,10 @@ const Dashboard: React.FC = () => {
               <Route path="/" element={<ScanUpload />} />
               <Route path="/results" element={<DiagnosisResults />} />
               <Route path="/reports" element={<PastReports />} />
-              <Route path="/settings" element={<div>Settings coming soon...</div>} />
+              <Route path="/analytics" element={<Analytics />} />
+              <Route path="/patients" element={<PatientManagement />} />
+              <Route path="/security" element={<SecuritySettings />} />
+              <Route path="/settings" element={<div className="text-center py-12"><h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">Settings</h2><p className="text-slate-600 dark:text-slate-400">Settings page coming soon...</p></div>} />
             </Routes>
           </div>
         </main>
